@@ -1,0 +1,15 @@
+# Mines tests/example.txt and compares the sorted output with tests/example.expected.
+foreach(threads 1 4)
+  execute_process(COMMAND ${EFIM} ${DIR}/example.txt ${OUT} 40 --sep space --threads ${threads}
+                  RESULT_VARIABLE rc OUTPUT_QUIET ERROR_QUIET)
+  if(NOT rc EQUAL 0)
+    message(FATAL_ERROR "efim failed with ${threads} thread(s)")
+  endif()
+  file(STRINGS ${OUT} got)
+  list(SORT got)
+  file(STRINGS ${DIR}/example.expected want)
+  list(SORT want)
+  if(NOT got STREQUAL want)
+    message(FATAL_ERROR "output mismatch with ${threads} thread(s)")
+  endif()
+endforeach()
